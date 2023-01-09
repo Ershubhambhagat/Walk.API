@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NZWalks.API.Data;
 using NZWalks.API.Models.DTO;
+//using NZWalks.API.Data;
+//using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
@@ -14,7 +15,7 @@ namespace NZWalks.API.Controllers
         private readonly IWalkDiffucaltyRepository walkDiffucaltyRepository;
         private readonly IMapper mapper;
 
-        public WalkDiffucaltyControllerr(IWalkDiffucaltyRepository walkDiffucaltyRepository,IMapper mapper)
+        public WalkDiffucaltyControllerr(IWalkDiffucaltyRepository walkDiffucaltyRepository, IMapper mapper)
         {
             this.walkDiffucaltyRepository = walkDiffucaltyRepository;
             this.mapper = mapper;
@@ -23,9 +24,9 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> GetAllWalkDiffuculty()
         {
             //DTO To Domain
-          var workDiffucaltyDomain=  await walkDiffucaltyRepository.GetAllAsync();
+            var workDiffucaltyDomain = await walkDiffucaltyRepository.GetAllAsync();
             //Domain TO DTO
-            var workDiffucaltyDTO= mapper.Map<List<Models.DTO.WalkDifficulty>>(workDiffucaltyDomain);
+            var workDiffucaltyDTO = mapper.Map<List<Models.DTO.WalkDifficulty>>(workDiffucaltyDomain);
             return Ok(workDiffucaltyDTO);
         }
         [HttpGet]
@@ -33,29 +34,36 @@ namespace NZWalks.API.Controllers
         [ActionName("GetWalkdiffucalty")]
         public async Task<IActionResult> GetWalkdiffucalty(Guid id)
         {
-            var walkDiffucalty= await walkDiffucaltyRepository.GetAsync(id);
+            var walkDiffucalty = await walkDiffucaltyRepository.GetAsync(id);
             if (walkDiffucalty == null)
             {
                 return NotFound();
             }
             //convert  Domain to DTO 
-           var wolkDiffucaltyMapper= mapper.Map<Models.DTO.WalkDifficulty>(walkDiffucalty);
-            
-            return Ok(wolkDiffucaltyMapper );
+            var wolkDiffucaltyMapper = mapper.Map<Models.DTO.WalkDifficulty>(walkDiffucalty);
+
+            return Ok(wolkDiffucaltyMapper);
         }
         [HttpPost]
         public async Task<IActionResult> addwalkDiffucaltyAsync(Models.DTO.AddWalkDiffucaltyRequest addWalkDiffucaltyRequest)
         {
+
+            //validate 
+
+            //if(!ValidateaddwalkDiffucaltyAsync(addWalkDiffucaltyRequest))
+            //{
+            //    return BadRequest(ModelState);
+            //};
             //Convert DTO ToDomain
             var workDiffucaltyDomain = new Models.Domain.WalkDifficulty()
             {
                 Code = addWalkDiffucaltyRequest.Code
             };
             // call Repositry 
-           var WalkDiffucaltyDomain=  await walkDiffucaltyRepository.addAsync(workDiffucaltyDomain);
+            var WalkDiffucaltyDomain = await walkDiffucaltyRepository.addAsync(workDiffucaltyDomain);
 
             //conver domain to dto
-           var workDoffucaltyDTO= mapper.Map<Models.DTO.WalkDifficulty>(WalkDiffucaltyDomain);
+            var workDoffucaltyDTO = mapper.Map<Models.DTO.WalkDifficulty>(WalkDiffucaltyDomain);
             //Return Responce  
             return CreatedAtAction(nameof(GetWalkdiffucalty), new { id = workDoffucaltyDTO.Id }, workDoffucaltyDTO);
         }
@@ -64,29 +72,31 @@ namespace NZWalks.API.Controllers
 
         public async Task<IActionResult> UpdateWalkDiffucaltyAsync(Guid id, [FromBody] Models.DTO.UpdateWalkDiffucaltyRequest updateWalkDiffucaltyRequest)
         {
+            //validate Incoming value
+            //if (!ValidateUpdateWalkDiffucaltyAsync(updateWalkDiffucaltyRequest))
+            //{
+            //    return BadRequest(ModelState);
+            //};
             // Conver DTO TO Domain Model
             var walkUpdateDifficultyDomain = new Models.Domain.WalkDifficulty()
             {
                 Code = updateWalkDiffucaltyRequest.Code,
             };
-
             //Call Repositry For update
-           var walkUpdateDifficultyDomains= walkDiffucaltyRepository.updateAsync(id,walkUpdateDifficultyDomain);
-
-            if(walkUpdateDifficultyDomains==null)
+            var walkUpdateDifficultyDomains = walkDiffucaltyRepository.updateAsync(id, walkUpdateDifficultyDomain);
+            if (walkUpdateDifficultyDomains == null)
             {
                 return NotFound();
             }
             // Conver Domain TO DTO 
-
             var walkDiffucaltyDTO = mapper.Map<Models.Domain.WalkDifficulty>(walkUpdateDifficultyDomains);
             //return Responce 
-            return Ok(walkDiffucaltyDTO); 
+            return Ok(walkDiffucaltyDTO);
         }
         [HttpDelete]
 
         [Route("{id :Guid}")]
-        public async Task<IActionResult> DeleteWalkDiffucalty( Guid id)
+        public async Task<IActionResult> DeleteWalkDiffucalty(Guid id)
 
         {
             //Convert to Domain Form Dto
@@ -96,12 +106,56 @@ namespace NZWalks.API.Controllers
                 return BadRequest();
             }
             //Domain to DTO
-            var walkDiffucaltyDeleteDomain=mapper.Map<Models.DTO.WalkDifficulty>(walkDiffucaltyDomain);
+            var walkDiffucaltyDeleteDomain = mapper.Map<Models.DTO.WalkDifficulty>(walkDiffucaltyDomain);
             //REturn Responcre
-             
+
 
             return Ok();
-             
+
         }
-    }   
+
+        #region private methods
+        private bool ValidateaddwalkDiffucaltyAsync(Models.DTO.AddWalkDiffucaltyRequest addWalkDiffucaltyRequest)
+        {
+            if (addWalkDiffucaltyRequest == null)
+            {
+                ModelState.AddModelError(nameof(addWalkDiffucaltyRequest), $"{nameof(addWalkDiffucaltyRequest)}need to fill all boxx ");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(addWalkDiffucaltyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addWalkDiffucaltyRequest.Code), $"{nameof(addWalkDiffucaltyRequest.Code)} need to be  fill ");
+                return false;
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        private bool ValidateUpdateWalkDiffucaltyAsync(Models.DTO.UpdateWalkDiffucaltyRequest updateWalkDiffucaltyRequest)
+        {
+            if (updateWalkDiffucaltyRequest == null)
+            {
+                ModelState.AddModelError(nameof(updateWalkDiffucaltyRequest), $"{nameof(updateWalkDiffucaltyRequest)}need to fill all boxx ");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(updateWalkDiffucaltyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateWalkDiffucaltyRequest.Code), $"{nameof(updateWalkDiffucaltyRequest.Code)} need to be  fill ");
+                return false;
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+
+        #endregion
+    }
 }

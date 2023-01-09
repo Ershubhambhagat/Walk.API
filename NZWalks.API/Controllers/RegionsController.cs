@@ -64,6 +64,13 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegionAsync(AddRegionrequest addRegionrequest)
         {
+            //Validate the Request 168 to 213
+
+            //if (!ValidateAddRegionAsync(addRegionrequest))
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
             //Request(DTO) to Domain model 
             var region = new Models.Domain.Region()
             {
@@ -95,7 +102,7 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> DeleteRegionAsync(Guid Id)
         {
             //Get Region From Database
-            var region= await regionRepository.DeleteAsync(Id);
+            var region = await regionRepository.DeleteAsync(Id);
 
             //If not Found
             if (region == null)
@@ -117,47 +124,142 @@ namespace NZWalks.API.Controllers
             //Return Ok 
             return Ok(regionDTO);
         }
-
         [HttpPut]
         [Route("{Id:Guid}")]
-        public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid Id,[FromBody] Models.DTO.UpdateRegionRequest updateRegionRequestregion)
+        public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid Id, [FromBody] Models.DTO.UpdateRegionRequest updateRegionRequestregion)
         {
+            //validate incoming Request 
+            if (!ValidateupdateRegionRequestregion(updateRegionRequestregion))
+                {
+                return BadRequest(ModelState);
+            }
             //Convert DTO To Domain Model 
             //Domain Model Is Ready 
             var region = new Models.Domain.Region()
             {
                 Name = updateRegionRequestregion.Name,
-                Lat= updateRegionRequestregion.Lat,
+                Lat = updateRegionRequestregion.Lat,
                 Long = updateRegionRequestregion.Long,
-                Population= updateRegionRequestregion.Population,
-                Area= updateRegionRequestregion.Area,
+                Population = updateRegionRequestregion.Population,
+                Area = updateRegionRequestregion.Area,
             };
-
             // Update region Using Reositry
             var regions = await regionRepository.UpdateAsync(Id, region);
-
             //If Null then Not Found 
-            if(region== null)
+            if (region == null)
             {
                 return BadRequest();
             }
-
             //Convert Back To DTO
             var regionDTO = new Models.DTO.Region()
-            { 
-                Name= regions.Name,
-                Lat= regions.Lat,
-                Long= regions.Long,
-                Population= regions.Population,
-                Area= regions.Area,
-
+            {
+                Name = regions.Name,
+                Lat = regions.Lat,
+                Long = regions.Long,
+                Population = regions.Population,
+                Area = regions.Area,
             };
-
             return Ok();
-
-            //Return Ok 
-
         }
 
+        #region Private methods
+
+
+        private bool ValidateAddRegionAsync(Models.DTO.AddRegionrequest addRegionrequest)
+        {
+            if (addRegionrequest == null)
+            {
+
+                ModelState.AddModelError(nameof(addRegionrequest), $"This  Cannot be Null ,Emplty ");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(addRegionrequest.Code2))
+            {
+
+                ModelState.AddModelError(nameof(addRegionrequest.Code2), $"{nameof(addRegionrequest.Code2)} This  Cannot be Null ,Emplty or White Space ");
+            }
+            if (string.IsNullOrWhiteSpace(addRegionrequest.Name))
+            {
+
+                ModelState.AddModelError(nameof(addRegionrequest.Name), $"{nameof(addRegionrequest.Name)} This  Cannot be Null ,Emplty or White Space ");
+            }
+            if (addRegionrequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionrequest.Area), $"{nameof(addRegionrequest.Area)} This  Cannot be Lessthen Or == 0 Or Empty  , ");
+
+            }
+            if (addRegionrequest.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionrequest.Lat), $"{nameof(addRegionrequest.Lat)} This  Cannot be Lessthen Or == 0 Or Empty , ");
+
+            }
+            if (addRegionrequest.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionrequest.Long), $"{nameof(addRegionrequest.Long)} This  Cannot be Lessthen Or == 0 Or Empty , ");
+
+            }
+            if (addRegionrequest.Population < 0)
+            {
+                ModelState.AddModelError(nameof(addRegionrequest.Population), $"{nameof(addRegionrequest.Population)}  Popoulation Cna not be Empty , ");
+
+            }
+            if(ModelState.ErrorCount>0) {
+
+                return false;
+                    
+                    }
+            return true;
+
+        }
+        //Valoidation For Update 
+        private bool ValidateupdateRegionRequestregion(Models.DTO.UpdateRegionRequest updateRegionRequestregion)
+        {
+            if (updateRegionRequestregion == null)
+            {
+
+                ModelState.AddModelError(nameof(updateRegionRequestregion), $"This  Cannot be Null ,Emplty ");
+                return false;
+            }
+            //if (string.IsNullOrWhiteSpace(updateRegionRequestregion.))
+            //{
+
+            //    ModelState.AddModelError(nameof(updateRegionRequestregion.Code), $"{nameof(UpdateRegionAsync.Code2)} This  Cannot be Null ,Emplty or White Space ");
+            //}
+            if (string.IsNullOrWhiteSpace(updateRegionRequestregion.Name))
+            {
+
+                ModelState.AddModelError(nameof(updateRegionRequestregion.Name), $"{nameof(updateRegionRequestregion.Name)} This  Cannot be Null ,Emplty or White Space ");
+            }
+            if (updateRegionRequestregion.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequestregion.Area), $"{nameof(updateRegionRequestregion.Area)} This  Cannot be Lessthen Or == 0 Or Empty  , ");
+
+            }
+            if (updateRegionRequestregion.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequestregion.Lat), $"{nameof(updateRegionRequestregion.Lat)} This  Cannot be Lessthen Or == 0 Or Empty , ");
+
+            }
+            if (updateRegionRequestregion.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequestregion.Long), $"{nameof(updateRegionRequestregion.Long)} This  Cannot be Lessthen Or == 0 Or Empty , ");
+
+            }
+            if (updateRegionRequestregion.Population < 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequestregion.Population), $"{nameof(updateRegionRequestregion.Population)}  Popoulation Cna not be Empty , ");
+                    
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+
+                return false;
+
+            }
+            return true;
+
+        }
+        #endregion
     }
 }
+
