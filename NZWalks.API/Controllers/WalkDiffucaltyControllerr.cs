@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 //using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
 //using NZWalks.API.Data;
 //using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Data;
 
 namespace NZWalks.API.Controllers
 {
@@ -32,6 +34,8 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         [Route("{id :Guid}")]
         [ActionName("GetWalkdiffucalty")]
+        [Authorize(Roles = "Reader")]
+
         public async Task<IActionResult> GetWalkdiffucalty(Guid id)
         {
             var walkDiffucalty = await walkDiffucaltyRepository.GetAsync(id);
@@ -45,6 +49,8 @@ namespace NZWalks.API.Controllers
             return Ok(wolkDiffucaltyMapper);
         }
         [HttpPost]
+        [Authorize(Roles = "Write")]
+
         public async Task<IActionResult> addwalkDiffucaltyAsync(Models.DTO.AddWalkDiffucaltyRequest addWalkDiffucaltyRequest)
         {
 
@@ -69,7 +75,7 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id :Guid}")]
-
+        [Authorize(Roles = "Write")]
         public async Task<IActionResult> UpdateWalkDiffucaltyAsync(Guid id, [FromBody] Models.DTO.UpdateWalkDiffucaltyRequest updateWalkDiffucaltyRequest)
         {
             //validate Incoming value
@@ -94,7 +100,7 @@ namespace NZWalks.API.Controllers
             return Ok(walkDiffucaltyDTO);
         }
         [HttpDelete]
-
+        [Authorize(Roles = "Write")]
         [Route("{id :Guid}")]
         public async Task<IActionResult> DeleteWalkDiffucalty(Guid id)
 

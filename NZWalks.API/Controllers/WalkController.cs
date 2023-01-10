@@ -1,9 +1,11 @@
 ﻿
 
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Data;
 
 namespace NZWalks.API.Controllers
 {
@@ -59,6 +61,8 @@ namespace NZWalks.API.Controllers
             return Ok(WalkDTO);
         }
         [HttpPost]
+        [Authorize(Roles = "Reader")]
+
         public async Task<IActionResult> AddWalkAsync([FromBody] Models.DTO.AddWalkRequest addWalkRequest)
         {
             //Validate Incoming Request 
@@ -91,6 +95,7 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id :Guid}")]
+        [Authorize(Roles = "Write")]
         public async Task<IActionResult> UpdateWalkAsync(Guid id, [FromBody] Models.DTO.UpdateWalkRequest updateWalkRequest)
         {
             //Validate Incoming Request
@@ -135,6 +140,7 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id :Guid}")]
+        [Authorize(Roles = "Write")]
         public async Task<IActionResult> DeleteWalkAsync(Guid id)
         {
             var workDomain = await walkRepositori.DeleteWalkAsync(id);
