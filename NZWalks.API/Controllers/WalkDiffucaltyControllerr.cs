@@ -34,7 +34,7 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         [Route("{id :Guid}")]
         [ActionName("GetWalkdiffucalty")]
-        [Authorize(Roles = "Reader")]
+        [Authorize(Roles = "reader")]
 
         public async Task<IActionResult> GetWalkdiffucalty(Guid id)
         {
@@ -49,7 +49,7 @@ namespace NZWalks.API.Controllers
             return Ok(wolkDiffucaltyMapper);
         }
         [HttpPost]
-        [Authorize(Roles = "Write")]
+        [Authorize(Roles = "write")]
 
         public async Task<IActionResult> addwalkDiffucaltyAsync(Models.DTO.AddWalkDiffucaltyRequest addWalkDiffucaltyRequest)
         {
@@ -75,7 +75,7 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id :Guid}")]
-        [Authorize(Roles = "Write")]
+        [Authorize(Roles = "write")]
         public async Task<IActionResult> UpdateWalkDiffucaltyAsync(Guid id, [FromBody] Models.DTO.UpdateWalkDiffucaltyRequest updateWalkDiffucaltyRequest)
         {
             //validate Incoming value
@@ -100,7 +100,7 @@ namespace NZWalks.API.Controllers
             return Ok(walkDiffucaltyDTO);
         }
         [HttpDelete]
-        [Authorize(Roles = "Write")]
+        [Authorize(Roles = "write")]
         [Route("{id :Guid}")]
         public async Task<IActionResult> DeleteWalkDiffucalty(Guid id)
 

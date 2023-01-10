@@ -61,7 +61,7 @@ namespace NZWalks.API.Controllers
             return Ok(WalkDTO);
         }
         [HttpPost]
-        [Authorize(Roles = "Reader")]
+        [Authorize(Roles = "reader")]
 
         public async Task<IActionResult> AddWalkAsync([FromBody] Models.DTO.AddWalkRequest addWalkRequest)
         {
@@ -95,7 +95,7 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id :Guid}")]
-        [Authorize(Roles = "Write")]
+        [Authorize(Roles = "write")]
         public async Task<IActionResult> UpdateWalkAsync(Guid id, [FromBody] Models.DTO.UpdateWalkRequest updateWalkRequest)
         {
             //Validate Incoming Request
@@ -140,7 +140,7 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id :Guid}")]
-        [Authorize(Roles = "Write")]
+        [Authorize(Roles = "write")]
         public async Task<IActionResult> DeleteWalkAsync(Guid id)
         {
             var workDomain = await walkRepositori.DeleteWalkAsync(id);

@@ -23,6 +23,8 @@ namespace NZWalks.API.Repositories
             clame.Add(new Claim(ClaimTypes.GivenName,user.Name));
             clame.Add(new Claim(ClaimTypes.Email,user.Email));
             //Loop into Rool of user
+
+
             user.Roles.ForEach((role) =>
             {
                 clame.Add(new Claim(ClaimTypes.Role, role));

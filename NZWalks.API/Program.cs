@@ -16,9 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    //this is for JWT Tocken for unlock 
     var securitySchema = new OpenApiSecurityScheme
     {
-        Name = "Jwt Authenmcation ",
+        Name = "Jwt Authencation ",
         Description = "Enter Vilad Jwt Bearer Token",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
@@ -53,10 +54,11 @@ builder.Services.AddScoped<IWalkRepositori, WalkRepositori>();
 builder.Services.AddScoped<IWalkDiffucaltyRepository, WalkDiffucaltyRepository>();
 builder.Services.AddScoped<ITockenHandler, TockenHandlerRepository>();
 
-builder.Services.AddSingleton<IUserRepository, StaticUserRepository>();
-
+//builder.Services.AddSingleton<IUserRepository, StaticUserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //    .AddJwtBearer(option =>
 //    option.TokenValidationParameters = new TokenValidationParameters{ 
